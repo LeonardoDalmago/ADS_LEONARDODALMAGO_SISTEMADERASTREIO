@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Rastreamento de pedidos</title>
+        <style>
+            body { font-family: sans-serif; background: #eef1f5; margin: 0; }
+            .topo { background: #1f3a5f; color: #fff; padding: 1rem 2rem; display: flex;
+                    justify-content: space-between; align-items: center; }
+            .topo a { color: #fff; }
+            .conteudo { max-width: 860px; margin: 2rem auto; padding: 0 1rem; }
+            .busca { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+            .resumo { margin: 0 0 .8rem 0; }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="topo">
+            <strong>Portal de Rastreamento de Pedidos</strong>
+            <h:link outcome="login" value="Área do funcionário"/>
+        </div>
+
+        <div class="conteudo">
+            <h2>Acompanhe seu pedido</h2>
+            <p>Digite o CNPJ da sua empresa para ver os pedidos e o andamento de cada um.</p>
+
+            <h:form id="formRastreio">
+                <p:messages id="msgs" closable="true"/>
+
+                <div class="busca">
+                    <p:inputText id="cnpj" value="#{rastreioController.cnpj}" maxlength="18"
+                                 placeholder="00.000.000/0000-00" style="width: 16rem"/>
+                    <p:commandButton value="Consultar" icon="pi pi-search"
+                                     actionListener="#{rastreioController.consultar}"
+                                     process="@form" update="@form"/>
+                </div>
+
+                <h:panelGroup rendered="#{rastreioController.consultado}">
+                    <h3>#{rastreioController.cliente.razaoSocial}</h3>
+
+                    <h:outputText value="Nenhum pedido encontrado para este cliente."
+                                  rendered="#{empty rastreioController.pedidos}"/>
+
+                    <ui:repeat value="#{rastreioController.pedidos}" var="ped">
+                        <p:panel header="Pedido #{ped.numeroPedido}" style="margin-bottom: 1rem">
+                            <p class="resumo"><strong>Descrição:</strong> #{ped.descricao}</p>
+                            <p class="resumo"><strong>Status:</strong> #{ped.status.descricao}</p>
+                            <p class="resumo">
+                                <strong>Previsão de entrega:</strong>
+                                <h:outputText value="#{ped.previsaoEntrega}">
+                                    <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </p>
+                            <p class="resumo">
+                                <strong>Transportadora:</strong> #{ped.transportadora.nome}
+                            </p>
+
+                            <p:dataTable var="h" value="#{ped.historico}"
+                                         emptyMessage="Ainda não há movimentações.">
+                                <p:column headerText="Data" style="width: 11rem">
+                                    <h:outputText value="#{h.data}">
+                                        <f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy HH:mm"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Andamento">
+                                    <h:outputText value="#{h.descricao}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                    </ui:repeat>
+                </h:panelGroup>
+            </h:form>
+        </div>
+    </h:body>
+</html>
