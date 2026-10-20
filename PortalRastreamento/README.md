@@ -2,7 +2,7 @@
 
 Sistema web para cadastro e acompanhamento de pedidos. Os funcionários podem cadastrar clientes, transportadoras e pedidos, além de atualizar o andamento. O cliente consulta os pedidos pela página pública usando o CNPJ.
 
-Projeto da disciplina de Análise e Desenvolvimento de Sistemas (UPF).
+Projeto da disciplina de Análise e Desenvolvimento de Sistemas - ADS - (UPF).
 
 ## Tecnologias
 
