@@ -1,1 +1,0 @@
-git cat-file -t (Get-Content .git\refs\heads\main)
