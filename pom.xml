@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -28,13 +29,19 @@
             <classifier>jakarta</classifier>
         </dependency>
 
-        <!-- Manhattan: ativar so na Etapa 8, depois de instalar o jar
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+        </dependency>
+
         <dependency>
             <groupId>org.primefaces.themes</groupId>
             <artifactId>manhattan</artifactId>
             <version>7.0.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/manhattan-theme-7.0.0-jakarta.jar</systemPath>
         </dependency>
-        -->
     </dependencies>
 
     <build>
@@ -53,6 +60,15 @@
                 <version>3.3.2</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <webResources>
+                        <resource>
+                            <directory>${project.basedir}/src/main/webapp/WEB-INF/lib</directory>
+                            <targetPath>WEB-INF/lib</targetPath>
+                            <includes>
+                                <include>manhattan-theme-7.0.0-jakarta.jar</include>
+                            </includes>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,13 +1,21 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html"
-      xmlns:p="http://primefaces.org/ui">
-<h:head>
-    <title>Início - Portal de Rastreamento</title>
-</h:head>
-<h:body>
-    <h1>Página inicial</h1>
-    <p>Ambiente funcionando.</p>
-    <p:button value="Voltar ao login" outcome="login" />
-</h:body>
-</html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Portal Rastreamento - Dashboard</ui:define>
+
+    <ui:define name="content">
+        <div class="grid">
+            <div class="col-12">
+                <div class="card">
+                    <h1>Bem-vindo ao Portal de Rastreamento</h1>
+                    <p>Use o menu lateral para navegar no sistema.</p>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>
