@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Rastreamento de Pedidos - Tecnotri</ui:define>
+
+    <ui:define name="content">
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true"/>
+
+            <div class="card">
+                <h5>Gerenciamento de Pedidos</h5>
+                <p:commandButton value="Novo Pedido" icon="pi pi-plus" actionListener="#{pedidoBean.prepararNovo}"
+                                 update=":form:manage-pedido-content" oncomplete="PF('managePedidoDialog').show()"
+                                 styleClass="ui-button-success" style="margin-bottom: 10px;"/>
+
+                <p:dataTable id="dt-pedidos" value="#{pedidoBean.pedidos}" var="ped" emptyMessage="Nenhum pedido encontrado.">
+                    <p:column headerText="Código">
+                        <h:outputText value="#{ped.codigoRastreio}" />
+                    </p:column>
+                    <p:column headerText="Produto">
+                        <h:outputText value="#{ped.produto}" />
+                    </p:column>
+                    <p:column headerText="Cliente">
+                        <h:outputText value="#{ped.cliente}" />
+                    </p:column>
+                    <p:column headerText="Status">
+                        <h:outputText value="#{ped.status}" />
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <p:commandButton icon="pi pi-pencil" update=":form:manage-pedido-content"
+                                         oncomplete="PF('managePedidoDialog').show()"
+                                         actionListener="#{pedidoBean.prepararEdicao(ped)}"
+                                         styleClass="edit-button rounded-button ui-button-success" />
+                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
+                                         actionListener="#{pedidoBean.excluir(ped)}" update="dt-pedidos" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:dialog header="Detalhes do Pedido" showEffect="fade" modal="true" widgetVar="managePedidoDialog" responsive="true">
+                <p:outputPanel id="manage-pedido-content" class="ui-fluid">
+                    <div class="field">
+                        <p:outputLabel for="codigo">Código de Rastreio</p:outputLabel>
+                        <p:inputText id="codigo" value="#{pedidoBean.pedido.codigoRastreio}" required="true"/>
+                    </div>
+                    <div class="field">
+                        <p:outputLabel for="produto">Produto Tecnotri</p:outputLabel>
+                        <p:selectOneMenu id="produto" value="#{pedidoBean.pedido.produto}">
+                            <f:selectItem itemLabel="Palete Plástico" itemValue="Palete Plástico"/>
+                            <f:selectItem itemLabel="Caixa Agrícola" itemValue="Caixa Agrícola"/>
+                            <f:selectItem itemLabel="Contentor 1000L" itemValue="Contentor 1000L"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="field">
+                        <p:outputLabel for="cliente">Cliente</p:outputLabel>
+                        <p:inputText id="cliente" value="#{pedidoBean.pedido.cliente}" required="true"/>
+                    </div>
+                    <div class="field">
+                        <p:outputLabel for="status">Status</p:outputLabel>
+                        <p:selectOneMenu id="status" value="#{pedidoBean.pedido.status}">
+                            <f:selectItem itemLabel="Em Produção" itemValue="Em Produção"/>
+                            <f:selectItem itemLabel="Expedido" itemValue="Expedido"/>
+                            <f:selectItem itemLabel="Em Trânsito" itemValue="Em Trânsito"/>
+                            <f:selectItem itemLabel="Entregue" itemValue="Entregue"/>
+                        </p:selectOneMenu>
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Salvar" icon="pi pi-check" actionListener="#{pedidoBean.salvar}"
+                                     update="manage-pedido-content dt-pedidos messages" process="manage-pedido-content @this"/>
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('managePedidoDialog').hide()"
+                                     class="ui-button-secondary" type="button"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

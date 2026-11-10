@@ -1,30 +1,26 @@
 package br.com.portalrastreamento.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.io.Serializable;
 
-@Entity // Diz que esta classe vai virar uma tabela no banco
-@Table(name = "usuarios") // Nome da tabela no banco
+@Entity
+@Table(name = "usuarios")
 public class Usuario implements Serializable {
 
-    @Id // Diz que este é o campo chave primária
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremento (1, 2, 3...)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, length = 100)
-    private String nome;
-
-    @Column(nullable = false, unique = true, length = 50)
     private String login;
-
-    @Column(nullable = false)
     private String senha;
 
-    @Enumerated(EnumType.STRING) // Salva o nome do Enum (ADMINISTRADOR/OPERADOR) em texto
-    @Column(nullable = false)
-    private PerfilUsuario perfil;
-
-    // Clique com o botão direito no código > Insert Code > Getter and Setter...
-    // Selecione todos os campos e clique em Generate. 
-    // Cole eles aqui embaixo!
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getLogin() { return login; }
+    public void setLogin(String login) { this.login = login; }
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
 }
