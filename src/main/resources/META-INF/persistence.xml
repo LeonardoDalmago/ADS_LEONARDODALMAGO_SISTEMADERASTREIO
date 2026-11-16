@@ -10,6 +10,7 @@
         
         <class>br.com.portalrastreamento.model.Usuario</class>
         <class>br.com.portalrastreamento.model.Pedido</class>
+        <class>br.com.portalrastreamento.model.MensagemSuporte</class>
 
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="update"/>

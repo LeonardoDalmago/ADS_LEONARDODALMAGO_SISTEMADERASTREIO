@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+    <f:viewParam name="codigo" value="#{suporteConvidadoBean.codigoPedido}" />
+</f:metadata>
+<h:head>
+    <h:outputStylesheet name="css/primeicons.css" library="manhattan-layout" />
+    <h:outputStylesheet name="css/primeflex.min.css" library="manhattan-layout" />
+    <h:outputStylesheet name="css/layout-cyan-deeporange.css" library="manhattan-layout" />
+    <title>Suporte - Tecnotri</title>
+    <style>
+        body { margin: 0; background: #f3f4f6; font-family: sans-serif; }
+        .topo { background: #fff; color: #1f2937; padding: 12px 24px; border-bottom: 1px solid #e5e7eb;
+                display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .topo .marca { display: flex; align-items: center; gap: 12px; }
+        .topo h1 { margin: 0; font-size: 1.2rem; }
+        .conteudo { max-width: 860px; margin: 24px auto; padding: 0 16px; }
+        .campo { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+        .campo input, .campo textarea { width: 100%; box-sizing: border-box; }
+    </style>
+</h:head>
+<h:body>
+    <div class="topo">
+        <div class="marca">
+            <p:graphicImage name="images/logo-tecnotri.png" library="manhattan-layout" style="max-height: 40px;" />
+            <h1>Suporte - Tecnotri</h1>
+        </div>
+        <h:form>
+            <p:button value="Voltar ao rastreio" outcome="/convidado/rastreio" icon="pi pi-arrow-left" />
+        </h:form>
+    </div>
+
+    <div class="conteudo">
+        <h:form id="form">
+            <p:messages id="msgs" showDetail="false" closable="true" />
+
+            <p:panel header="Falar com o suporte">
+                <p>Conte o que aconteceu. Respondemos no e-mail que você informar. Não precisa fazer login.</p>
+
+                <div class="campo">
+                    <p:outputLabel for="nome" value="Seu nome *" />
+                    <p:inputText id="nome" value="#{suporteConvidadoBean.nome}" maxlength="100"
+                                 required="true" requiredMessage="Informe seu nome." />
+                </div>
+
+                <div class="campo">
+                    <p:outputLabel for="email" value="Seu e-mail *" />
+                    <p:inputText id="email" value="#{suporteConvidadoBean.email}" maxlength="120"
+                                 required="true" requiredMessage="Informe seu e-mail.">
+                        <f:validateRegex pattern="[^@\s]+@[^@\s]+\.[^@\s]+" />
+                    </p:inputText>
+                </div>
+
+                <div class="campo">
+                    <p:outputLabel for="codigoPedido" value="Código de rastreio (opcional)" />
+                    <p:inputText id="codigoPedido" value="#{suporteConvidadoBean.codigoPedido}" maxlength="50" />
+                </div>
+
+                <div class="campo">
+                    <p:outputLabel for="assunto" value="Assunto *" />
+                    <p:inputText id="assunto" value="#{suporteConvidadoBean.assunto}" maxlength="120"
+                                 required="true" requiredMessage="Informe o assunto." />
+                </div>
+
+                <div class="campo">
+                    <p:outputLabel for="mensagem" value="Mensagem *" />
+                    <p:inputTextarea id="mensagem" value="#{suporteConvidadoBean.mensagem}" rows="6" maxlength="2000"
+                                     required="true" requiredMessage="Escreva sua mensagem." />
+                </div>
+
+                <p:commandButton value="Enviar mensagem" icon="pi pi-send"
+                                 action="#{suporteConvidadoBean.enviar}" update="@form" />
+            </p:panel>
+        </h:form>
+    </div>
+</h:body>
+</html>
