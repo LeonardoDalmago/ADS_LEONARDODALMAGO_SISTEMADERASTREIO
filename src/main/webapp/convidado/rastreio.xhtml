@@ -67,11 +67,14 @@
                     <h:outputText value="Produto:" style="font-weight:bold" />
                     <h:outputText value="#{rastreioConvidadoBean.pedido.produto}" />
 
+                    <h:outputText value="Transportadora:" style="font-weight:bold" />
+                    <h:outputText value="#{rastreioConvidadoBean.pedido.transportadora.nome}" />
+
                     <h:outputText value="Cliente:" style="font-weight:bold" />
                     <h:outputText value="#{rastreioConvidadoBean.clienteMascarado}" />
 
                     <h:outputText value="Status atual:" style="font-weight:bold" />
-                    <p:tag value="#{rastreioConvidadoBean.pedido.status}" severity="info" />
+                    <p:tag value="#{rastreioConvidadoBean.pedido.status.descricao}" severity="info" />
 
                     <h:outputText value="Última atualização:" style="font-weight:bold" />
                     <h:outputText value="#{rastreioConvidadoBean.pedido.dataAtualizacao}">

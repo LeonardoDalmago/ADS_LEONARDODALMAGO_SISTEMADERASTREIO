@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/template.xhtml">
 
-    <ui:define name="title">Rastreamento de Pedidos - Tecnotri</ui:define>
+    <ui:define name="title">Pedidos - Tecnotri</ui:define>
 
     <ui:define name="content">
         <h:form id="form">
@@ -13,39 +13,60 @@
 
             <div class="card">
                 <h5>Gerenciamento de Pedidos</h5>
-                <p:commandButton value="Novo Pedido" icon="pi pi-plus" actionListener="#{pedidoBean.prepararNovo}"
-                                 update=":form:manage-pedido-content" oncomplete="PF('managePedidoDialog').show()"
-                                 styleClass="ui-button-success" style="margin-bottom: 10px;"/>
 
-                <p:dataTable id="dt-pedidos" value="#{pedidoBean.pedidos}" var="ped" emptyMessage="Nenhum pedido encontrado.">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px;">
+                    <p:inputText id="busca" value="#{pedidoBean.termoBusca}" placeholder="Buscar por código de rastreio"
+                                 style="min-width: 260px;"/>
+                    <p:commandButton value="Buscar" icon="pi pi-search" action="#{pedidoBean.buscar}"
+                                     process="busca @this" update="dt-pedidos"/>
+                    <p:commandButton value="Limpar" icon="pi pi-times" action="#{pedidoBean.limparBusca}"
+                                     process="@this" update="busca dt-pedidos" resetValues="true"
+                                     styleClass="ui-button-secondary"/>
+                    <span style="flex: 1;"></span>
+                    <p:commandButton process="@this" value="Novo Pedido" icon="pi pi-plus" actionListener="#{pedidoBean.prepararNovo}"
+                                     update=":form:manage-pedido-content" oncomplete="PF('managePedidoDialog').show()"
+                                     styleClass="ui-button-success"/>
+                </div>
+
+                <p:dataTable id="dt-pedidos" value="#{pedidoBean.pedidos}" var="ped"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             emptyMessage="Nenhum pedido encontrado.">
                     <p:column headerText="Código">
-                        <h:outputText value="#{ped.codigoRastreio}" />
+                        <h:outputText value="#{ped.codigoRastreio}"/>
                     </p:column>
                     <p:column headerText="Produto">
-                        <h:outputText value="#{ped.produto}" />
+                        <h:outputText value="#{ped.produto}"/>
                     </p:column>
                     <p:column headerText="Cliente">
-                        <h:outputText value="#{ped.cliente}" />
+                        <h:outputText value="#{ped.cliente}"/>
+                    </p:column>
+                    <p:column headerText="Transportadora">
+                        <h:outputText value="#{ped.transportadora.nome}"/>
                     </p:column>
                     <p:column headerText="Status">
-                        <h:outputText value="#{ped.status}" />
+                        <p:tag value="#{ped.status.descricao}" severity="#{ped.status.severidade}"/>
                     </p:column>
-                    <p:column headerText="Ações">
-                        <p:commandButton icon="pi pi-pencil" update=":form:manage-pedido-content"
+                    <p:column headerText="Ações" style="width: 120px; text-align: center;">
+                        <p:commandButton process="@this" icon="pi pi-pencil" update=":form:manage-pedido-content"
                                          oncomplete="PF('managePedidoDialog').show()"
                                          actionListener="#{pedidoBean.prepararEdicao(ped)}"
-                                         styleClass="edit-button rounded-button ui-button-success" />
-                        <p:commandButton class="ui-button-warning rounded-button" icon="pi pi-trash"
-                                         actionListener="#{pedidoBean.excluir(ped)}" update="dt-pedidos" />
+                                         title="Editar"
+                                         styleClass="edit-button rounded-button ui-button-success"/>
+                        <p:commandButton process="@this" icon="pi pi-trash" styleClass="rounded-button ui-button-warning"
+                                         actionListener="#{pedidoBean.excluir(ped)}" update=":form:dt-pedidos :form:messages"
+                                         onclick="return confirm('Excluir este pedido?');"
+                                         title="Excluir"/>
                     </p:column>
                 </p:dataTable>
             </div>
 
-            <p:dialog header="Detalhes do Pedido" showEffect="fade" modal="true" widgetVar="managePedidoDialog" responsive="true">
-                <p:outputPanel id="manage-pedido-content" class="ui-fluid">
+            <p:dialog header="Detalhes do Pedido" showEffect="fade" modal="true" widgetVar="managePedidoDialog"
+                      responsive="true" draggable="false" resizable="false">
+                <p:outputPanel id="manage-pedido-content" styleClass="ui-fluid">
                     <div class="field">
                         <p:outputLabel for="codigo">Código de Rastreio</p:outputLabel>
-                        <p:inputText id="codigo" value="#{pedidoBean.pedido.codigoRastreio}" required="true"/>
+                        <p:inputText id="codigo" value="#{pedidoBean.pedido.codigoRastreio}" required="true"
+                                     requiredMessage="Informe o código de rastreio."/>
                     </div>
                     <div class="field">
                         <p:outputLabel for="produto">Produto Tecnotri</p:outputLabel>
@@ -57,24 +78,35 @@
                     </div>
                     <div class="field">
                         <p:outputLabel for="cliente">Cliente</p:outputLabel>
-                        <p:inputText id="cliente" value="#{pedidoBean.pedido.cliente}" required="true"/>
+                        <p:inputText id="cliente" value="#{pedidoBean.pedido.cliente}" required="true"
+                                     requiredMessage="Informe o cliente."/>
+                    </div>
+                    <div class="field">
+                        <p:outputLabel for="transportadora">Transportadora</p:outputLabel>
+                        <p:selectOneMenu id="transportadora" value="#{pedidoBean.pedido.transportadora}"
+                                         converter="#{transportadoraConverter}" required="true"
+                                         requiredMessage="Selecione a transportadora (cadastre em Transportadoras).">
+                            <f:selectItem itemLabel="Selecione..." itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{pedidoBean.transportadoras}" var="t"
+                                           itemLabel="#{t.nome}" itemValue="#{t}"/>
+                        </p:selectOneMenu>
                     </div>
                     <div class="field">
                         <p:outputLabel for="status">Status</p:outputLabel>
                         <p:selectOneMenu id="status" value="#{pedidoBean.pedido.status}">
-                            <f:selectItem itemLabel="Em Produção" itemValue="Em Produção"/>
-                            <f:selectItem itemLabel="Expedido" itemValue="Expedido"/>
-                            <f:selectItem itemLabel="Em Trânsito" itemValue="Em Trânsito"/>
-                            <f:selectItem itemLabel="Entregue" itemValue="Entregue"/>
+                            <f:selectItems value="#{pedidoBean.statusOpcoes}" var="s"
+                                           itemLabel="#{s.descricao}" itemValue="#{s}"/>
                         </p:selectOneMenu>
                     </div>
                 </p:outputPanel>
 
                 <f:facet name="footer">
                     <p:commandButton value="Salvar" icon="pi pi-check" actionListener="#{pedidoBean.salvar}"
-                                     update="manage-pedido-content dt-pedidos messages" process="manage-pedido-content @this"/>
+                                     update="manage-pedido-content dt-pedidos messages"
+                                     process="manage-pedido-content @this"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('managePedidoDialog').hide()"/>
                     <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('managePedidoDialog').hide()"
-                                     class="ui-button-secondary" type="button"/>
+                                     styleClass="ui-button-secondary" type="button"/>
                 </f:facet>
             </p:dialog>
         </h:form>

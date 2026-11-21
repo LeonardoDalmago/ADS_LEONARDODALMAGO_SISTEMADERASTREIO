@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Usuários - Tecnotri</ui:define>
+
+    <ui:define name="content">
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true"/>
+
+            <div class="card">
+                <h5>Gerenciamento de Usuários</h5>
+
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 14px;">
+                    <p:inputText id="busca" value="#{usuarioBean.termoBusca}" placeholder="Buscar por nome"
+                                 style="min-width: 260px;"/>
+                    <p:commandButton value="Buscar" icon="pi pi-search" action="#{usuarioBean.buscar}"
+                                     process="busca @this" update=":form:dt-usuarios"/>
+                    <p:commandButton value="Limpar" icon="pi pi-times" action="#{usuarioBean.limparBusca}"
+                                     process="@this" update="busca :form:dt-usuarios" resetValues="true"
+                                     styleClass="ui-button-secondary"/>
+                    <span style="flex: 1;"></span>
+                    <p:commandButton value="Novo Usuário" icon="pi pi-plus" process="@this"
+                                     actionListener="#{usuarioBean.prepararNovo}"
+                                     update=":form:manage-usuario-content"
+                                     oncomplete="PF('manageUsuarioDialog').show()"
+                                     styleClass="ui-button-success"/>
+                </div>
+
+                <p:dataTable id="dt-usuarios" value="#{usuarioBean.usuarios}" var="usr"
+                             rows="10" paginator="true" paginatorPosition="bottom"
+                             emptyMessage="Nenhum usuário encontrado.">
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{usr.nome}"/>
+                    </p:column>
+                    <p:column headerText="Login">
+                        <h:outputText value="#{usr.login}"/>
+                    </p:column>
+                    <p:column headerText="Perfil">
+                        <p:tag value="#{usr.perfil.descricao}" severity="#{usr.perfil.severidade}"/>
+                    </p:column>
+                    <p:column headerText="Situação">
+                        <p:tag value="#{usr.ativo ? 'Ativo' : 'Inativo'}" severity="#{usr.ativo ? 'success' : 'danger'}"/>
+                    </p:column>
+                    <p:column headerText="Ações" style="width: 120px; text-align: center;">
+                        <p:commandButton icon="pi pi-pencil" process="@this" update=":form:manage-usuario-content"
+                                         oncomplete="PF('manageUsuarioDialog').show()"
+                                         actionListener="#{usuarioBean.prepararEdicao(usr)}"
+                                         title="Editar"
+                                         styleClass="edit-button rounded-button ui-button-success"/>
+                        <p:commandButton icon="pi pi-trash" process="@this"
+                                         styleClass="rounded-button ui-button-warning"
+                                         actionListener="#{usuarioBean.excluir(usr)}" update=":form:dt-usuarios :form:messages"
+                                         onclick="return confirm('Excluir este usuário?');"
+                                         title="Excluir"/>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:dialog header="Detalhes do Usuário" showEffect="fade" modal="true" widgetVar="manageUsuarioDialog"
+                      responsive="true" draggable="false" resizable="false">
+                <p:outputPanel id="manage-usuario-content" styleClass="ui-fluid">
+                    <div class="field">
+                        <p:outputLabel for="nome">Nome</p:outputLabel>
+                        <p:inputText id="nome" value="#{usuarioBean.usuario.nome}" maxlength="120"
+                                     required="true" requiredMessage="Informe o nome."/>
+                    </div>
+                    <div class="field">
+                        <p:outputLabel for="login">Login</p:outputLabel>
+                        <p:inputText id="login" value="#{usuarioBean.usuario.login}" maxlength="50"
+                                     required="true" requiredMessage="Informe o login."/>
+                    </div>
+                    <div class="field">
+                        <p:outputLabel for="senha">Senha</p:outputLabel>
+                        <p:password id="senha" value="#{usuarioBean.novaSenha}" maxlength="60" autocomplete="new-password"/>
+                        <small>Ao editar, deixe em branco para manter a senha atual.</small>
+                    </div>
+                    <div class="field">
+                        <p:outputLabel for="perfil">Perfil</p:outputLabel>
+                        <p:selectOneMenu id="perfil" value="#{usuarioBean.usuario.perfil}">
+                            <f:selectItems value="#{usuarioBean.perfilOpcoes}" var="pf"
+                                           itemLabel="#{pf.descricao}" itemValue="#{pf}"/>
+                        </p:selectOneMenu>
+                    </div>
+                    <div class="field">
+                        <p:selectBooleanCheckbox id="ativo" value="#{usuarioBean.usuario.ativo}" itemLabel="Usuário ativo"/>
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Salvar" icon="pi pi-check" actionListener="#{usuarioBean.salvar}"
+                                     update="manage-usuario-content :form:dt-usuarios :form:messages"
+                                     process="manage-usuario-content @this"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('manageUsuarioDialog').hide()"/>
+                    <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('manageUsuarioDialog').hide()"
+                                     styleClass="ui-button-secondary" type="button"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -2,22 +2,24 @@ package br.com.portalrastreamento.bean;
 
 import br.com.portalrastreamento.dao.RastreioDAO;
 import br.com.portalrastreamento.model.Pedido;
+import br.com.portalrastreamento.model.StatusPedido;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
-import java.text.Normalizer;
+import java.util.Arrays;
 import java.util.List;
 
 @Named
 @ViewScoped
 public class RastreioConvidadoBean implements Serializable {
 
-    // Mesmos valores do select "Status" da tela de pedidos, na ordem do andamento
-    private static final List<String> ETAPAS =
-            List.of("Em Produção", "Expedido", "Em Trânsito", "Entregue");
+    // Etapas na ordem do Enum StatusPedido
+    private static final List<String> ETAPAS = Arrays.stream(StatusPedido.values())
+            .map(StatusPedido::getDescricao)
+            .toList();
 
     @Inject
     private RastreioDAO rastreioDAO;
@@ -46,26 +48,12 @@ public class RastreioConvidadoBean implements Serializable {
         }
     }
 
-    /**
-     * Posição do status atual na lista de etapas (-1 se não for reconhecido).
-     * Ignora acentos, maiúsculas e separadores, então "Em Trânsito" e "EM_TRANSITO" valem o mesmo.
-     */
+    /** Posição do status atual na lista de etapas (-1 se o pedido não tiver status). */
     public int getIndiceStatus() {
         if (pedido == null || pedido.getStatus() == null) {
             return -1;
         }
-        String atual = normalizar(pedido.getStatus());
-        for (int i = 0; i < ETAPAS.size(); i++) {
-            if (normalizar(ETAPAS.get(i)).equals(atual)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private static String normalizar(String texto) {
-        String semAcento = Normalizer.normalize(texto.trim(), Normalizer.Form.NFD).replaceAll("\\p{M}", "");
-        return semAcento.toUpperCase().replaceAll("[^A-Z0-9]+", "_");
+        return pedido.getStatus().ordinal();
     }
 
     /** Esconde o nome do cliente (ex.: "Maria Souza" vira "M***** S*****"). */

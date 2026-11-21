@@ -1,44 +1,48 @@
-<ui:composition 
+<ui:composition
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:f="jakarta.faces.core"
     xmlns:h="jakarta.faces.html"
     xmlns:ui="jakarta.faces.facelets"
     xmlns:p="http://primefaces.org/ui">
 
-    <div class="layout-topbar">
-        <a href="#" id="layout-menu-btn" class="menu-btn">
+    <header class="tt-topbar">
+        <button type="button" id="tt-menu-btn" class="tt-icon-btn" title="Menu" aria-label="Abrir ou fechar o menu">
             <i class="pi pi-bars"></i>
-        </a>
+        </button>
 
-        <div class="layout-topbar-logo">
-            <h:link outcome="/index">
-                <p:graphicImage name="images/logo-tecnotri.png" library="manhattan-layout" style="height: 40px; margin-top: 5px;"/>
-            </h:link>
+        <h:link outcome="/index" styleClass="tt-brand">
+            <p:graphicImage name="images/logo-tecnotri.png" library="manhattan-layout" styleClass="tt-logo"/>
+        </h:link>
+
+        <div class="tt-topbar-spacer"></div>
+
+        <button type="button" id="tt-theme-toggle" class="tt-icon-btn" title="Alternar tema claro/escuro" aria-label="Alternar tema claro ou escuro">
+            <svg class="tt-ico-moon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <svg class="tt-ico-sun" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+        </button>
+
+        <div class="tt-user">
+            <span class="tt-avatar">#{not empty loginBean.login ? loginBean.login.substring(0, 1) : 'U'}</span>
+            <span class="tt-user-name">#{not empty loginBean.login ? loginBean.login : 'Usuário'}</span>
         </div>
 
-        <a id="topbar-menu-btn" href="#" class="topbar-menu-btn">
-            <i class="pi pi-ellipsis-v"></i>
-        </a>
-
-        <div class="layout-topbar-menu-wrapper">
-            <ul class="topbar-menu">
-                <li class="profile-item">
-                    <a href="#">
-                        <p:graphicImage name="images/avatar1.png" library="manhattan-layout" />
-                        <span class="topbar-item-name">#{loginBean.login != null ? loginBean.login : 'Usuário'}</span>
-                    </a>
-                    <ul class="animated">
-                        <li role="menuitem">
-                            <h:form style="margin:0; padding:0;">
-                                <p:commandLink action="#{loginBean.deslogar()}" style="display: flex; align-items: center; gap: 10px;">
-                                    <i class="pi pi-sign-out"></i>
-                                    <span>Sair do Sistema</span>
-                                </p:commandLink>
-                            </h:form>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
+        <h:form styleClass="tt-logout">
+            <h:commandLink action="#{loginBean.deslogar()}">
+                <i class="pi pi-sign-out"></i>
+                <span>Sair</span>
+            </h:commandLink>
+        </h:form>
+    </header>
 </ui:composition>

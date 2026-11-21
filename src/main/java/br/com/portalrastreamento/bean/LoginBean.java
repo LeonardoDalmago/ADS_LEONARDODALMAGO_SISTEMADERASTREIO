@@ -1,6 +1,7 @@
 package br.com.portalrastreamento.bean;
 
 import br.com.portalrastreamento.dao.UsuarioDAO;
+import br.com.portalrastreamento.model.PerfilUsuario;
 import br.com.portalrastreamento.model.Usuario;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -25,6 +26,8 @@ public class LoginBean implements Serializable {
 
         if (usuario != null) {
             this.usuarioLogado = usuario;
+            this.login = usuario.getLogin();
+            this.senha = null;
             return "index?faces-redirect=true";
         }
 
@@ -40,6 +43,11 @@ public class LoginBean implements Serializable {
 
     public boolean isAutenticado() {
         return usuarioLogado != null;
+    }
+
+    /** Só o perfil Administrador cadastra pedidos, transportadoras e usuários. */
+    public boolean isAdministrador() {
+        return usuarioLogado != null && usuarioLogado.getPerfil() == PerfilUsuario.ADMINISTRADOR;
     }
 
     public String getLogin() { return login; }

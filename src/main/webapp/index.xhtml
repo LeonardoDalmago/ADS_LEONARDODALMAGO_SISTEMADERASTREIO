@@ -5,17 +5,87 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/template.xhtml">
 
-    <ui:define name="title">Portal Rastreamento - Dashboard</ui:define>
+    <ui:define name="title">Dashboard - Portal de Rastreamento Tecnotri</ui:define>
 
     <ui:define name="content">
-        <div class="grid">
-            <div class="col-12">
+        <h:panelGroup rendered="#{param.acessoNegado eq 'true'}">
+            <div class="card" style="border-left: 5px solid #D92D20;">
+                <strong>Acesso restrito.</strong> Somente o administrador pode abrir as telas de cadastro.
+            </div>
+        </h:panelGroup>
+        <div class="tt-page-header">
+            <div class="tt-eyebrow"><span><strong>Portal</strong> de Rastreamento</span></div>
+            <h1 class="tt-title">Dashboard</h1>
+            <p class="tt-subtitle">Acompanhe o andamento dos pedidos <strong>da produção à entrega</strong></p>
+        </div>
+
+        <div class="tt-stats">
+            <div class="tt-stat tt-v-total">
+                <div class="tt-stat-icon"><i class="pi pi-list"></i></div>
+                <div>
+                    <div class="tt-stat-value">#{dashboardBean.total}</div>
+                    <div class="tt-stat-label">Total de pedidos</div>
+                </div>
+            </div>
+
+            <ui:repeat value="#{dashboardBean.statusLista}" var="s">
+                <div class="tt-stat tt-v-#{s.slug}">
+                    <div class="tt-stat-icon"><i class="pi #{s.icone}"></i></div>
+                    <div>
+                        <div class="tt-stat-value">#{dashboardBean.quantidade(s)}</div>
+                        <div class="tt-stat-label">#{s.descricao}</div>
+                    </div>
+                </div>
+            </ui:repeat>
+        </div>
+
+        <div class="tt-grid-2">
+            <div class="card">
+                <h5>Últimos pedidos atualizados</h5>
+                <p:dataTable value="#{dashboardBean.recentes}" var="ped" emptyMessage="Nenhum pedido cadastrado ainda.">
+                    <p:column headerText="Código">
+                        <h:outputText value="#{ped.codigoRastreio}"/>
+                    </p:column>
+                    <p:column headerText="Produto">
+                        <h:outputText value="#{ped.produto}"/>
+                    </p:column>
+                    <p:column headerText="Cliente">
+                        <h:outputText value="#{ped.cliente}"/>
+                    </p:column>
+                    <p:column headerText="Status">
+                        <span class="tt-badge tt-v-#{ped.status.slug}">#{ped.status.descricao}</span>
+                    </p:column>
+                    <p:column headerText="Atualização">
+                        <h:outputText value="#{ped.dataAtualizacao}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Sao_Paulo"/>
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <div>
                 <div class="card">
-                    <h1>Bem-vindo ao Portal de Rastreamento</h1>
-                    <p>Use o menu lateral para navegar no sistema.</p>
+                    <h5>Pedidos por status</h5>
+                    <ui:repeat value="#{dashboardBean.statusLista}" var="s">
+                        <div class="tt-bar-row tt-v-#{s.slug}">
+                            <div class="tt-bar-head">
+                                <span>#{s.descricao}</span>
+                                <span>#{dashboardBean.quantidade(s)} (#{dashboardBean.percentual(s)}%)</span>
+                            </div>
+                            <div class="tt-bar"><span style="width: #{dashboardBean.percentual(s)}%;"></span></div>
+                        </div>
+                    </ui:repeat>
+                </div>
+
+                <div class="card">
+                    <h5>Atalhos</h5>
+                    <div class="tt-shortcuts">
+                        <p:button value="Gerenciar pedidos" outcome="/pedidos" icon="pi pi-list"/>
+                        <p:button value="Abrir rastreio do convidado" outcome="/convidado/rastreio" target="_blank"
+                                  icon="pi pi-search" styleClass="ui-button-outlined"/>
+                    </div>
                 </div>
             </div>
         </div>
     </ui:define>
-
 </ui:composition>

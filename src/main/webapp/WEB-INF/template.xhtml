@@ -1,56 +1,53 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
       xmlns:p="http://primefaces.org/ui"
-      lang="en">
+      lang="pt-BR">
 
 <h:head>
     <f:facet name="first">
         <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="color-scheme" content="light dark"/>
     </f:facet>
-    <title><ui:insert name="title">PrimeFaces Manhattan</ui:insert></title>
-    <h:outputScript name="js/layout.js" library="manhattan-layout"/>
-    <h:outputScript name="js/prism.js" library="manhattan-layout"/>
+    <title><ui:insert name="title">Portal de Rastreamento - Tecnotri</ui:insert></title>
+    <h:outputStylesheet name="css/primeicons.css" library="manhattan-layout"/>
+    <h:outputStylesheet name="css/primeflex.min.css" library="manhattan-layout"/>
+    <h:outputScript name="js/tecnotri.js" library="tecnotri" target="head"/>
     <ui:insert name="head"/>
+    <f:facet name="last">
+        <h:outputStylesheet name="css/tecnotri.css" library="tecnotri"/>
+    </f:facet>
 </h:head>
 
-<h:body>
-    <div class="layout-wrapper layout-slim layout-light">
-        <div class="layout-main">
-            <ui:include src="./topbar.xhtml"/>
+<h:body styleClass="tt-body">
+    <ui:include src="./topbar.xhtml"/>
 
-            <div class="layout-content">
+    <div class="tt-app">
+        <ui:include src="./sidebar.xhtml"/>
+
+        <div class="tt-main">
+            <main class="tt-content">
                 <ui:insert name="content"/>
-            </div>
+            </main>
 
             <ui:include src="./footer.xhtml"/>
-
-            <div class="layout-main-mask"></div>
         </div>
-
-        <ui:include src="./config.xhtml"/>
-        <ui:include src="./rightpanel.xhtml"/>
-        <ui:include src="./sidebar.xhtml"/>
     </div>
 
-    <p:ajaxStatus style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
-        <f:facet name="start">
-            <i class="pi pi-spin pi-spinner layout-ajax-loader-icon" aria-hidden="true"/>
-        </f:facet>
+    <div id="tt-mask" class="tt-mask"></div>
 
+    <p:ajaxStatus styleClass="tt-ajax">
+        <f:facet name="start">
+            <i class="pi pi-spin pi-spinner" aria-hidden="true"/>
+        </f:facet>
         <f:facet name="complete">
             <h:outputText value=""/>
         </f:facet>
     </p:ajaxStatus>
-
-    <h:outputStylesheet name="css/primeicons.css" library="manhattan-layout"/>
-    <h:outputStylesheet name="css/primeflex.min.css" library="manhattan-layout"/>
-    <h:outputStylesheet name="css/layout-cyan-deeporange.css" library="manhattan-layout" />
 </h:body>
 
 </html>
